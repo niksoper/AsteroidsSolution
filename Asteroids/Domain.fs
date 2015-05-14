@@ -2,10 +2,12 @@
 
 open Geometry
       
-type Ship = { 
-    Position: Point
-    Velocity: Vector 
-}
+type Ship = { Position: Point; Velocity: Vector } with
+    member this.Verticies = [
+        { X = this.Position.X - 0.1;   Y = this.Position.Y - 0.1 }
+        { X = this.Position.X + 0.1;  Y = this.Position.Y - 0.1 }
+        { X = this.Position.X;        Y = this.Position.Y + 0.1 }
+    ]
 
 type GameRunning =
     | Continue

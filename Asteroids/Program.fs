@@ -1,4 +1,6 @@
-﻿open System
+﻿module Program
+
+open System
 
 open OpenTK
 open OpenTK.Graphics
@@ -7,6 +9,7 @@ open OpenTK.Input
 
 open Geometry
 open Domain
+open Render
 
 (*
     Note: While we are calling this an Asteroids clone, we may deviate from it...
@@ -30,19 +33,6 @@ open Domain
 let main _ = 
     use game = new GameWindow(800, 600, GraphicsMode.Default, "Asteroids")
 
-    let load _ =
-        // Some game and OpenGL Setup
-        game.VSync <- VSyncMode.On
-        GL.Enable(EnableCap.Blend)
-        GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One)
-
-    let resize _ = 
-        //Setup of projection matrix for game
-        GL.Viewport(game.ClientRectangle.X, game.ClientRectangle.Y, game.ClientRectangle.Width, game.ClientRectangle.Height)
-        let mutable projection = Matrix4.CreatePerspectiveFieldOfView(float32 (Math.PI / 4.), float32 game.Width / float32 game.Height, 0.001f, 5.0f)
-        GL.MatrixMode(MatrixMode.Projection)
-        GL.LoadMatrix(&projection)
-
     let updateFrame (state :GameState) =
         match state.Running with 
         | Continue -> ()
@@ -56,26 +46,7 @@ let main _ =
         GL.MatrixMode(MatrixMode.Modelview)
         GL.LoadMatrix(&modelview)
 
-        // Draw triangle based on ship position
-        PrimitiveType.Triangles |> GL.Begin
-        let shipPos = state.Ship.Position
-        (*Note the 4. (or 4.0) for the z coordinate of the vertices is 4, instead of zero because of the specific projection. 
-            For now, simply keep it and abstract out the coordinates so that you can just use X and Y, while keeping Z contstant. 
-
-            One other thing to note about the coordinates: The screen coordinate system is not between nice numbers. 
-            I attempted to clean that up, but I've had no luck so far. 
-         *) 
-
-        GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X + -0.1, shipPos.Y + -0.1, 4.) 
-        GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X + 0.1, shipPos.Y + -0.1, 4.)
-        GL.Color3(0.2, 0.9, 1.); GL.Vertex3(shipPos.X + 0., shipPos.Y + 0.1, 4.)
-        GL.End()
-
-        //Draw Ship Centre - Note: I've added this so you can see where the ship position is. 
-        PrimitiveType.Points |> GL.Begin
-
-        GL.Color3(1., 1., 1.); GL.Vertex3(shipPos.X, shipPos.Y, 4.) 
-        GL.End()
+        drawShip state.Ship
 
         // Game is double buffered
         game.SwapBuffers()
@@ -102,8 +73,8 @@ let main _ =
         | EndGame -> {state with Running=Stop}
         | NoChange -> state
 
-    use loadSubscription = game.Load.Subscribe load
-    use resizeSubscription = game.Resize.Subscribe resize 
+    use loadSubscription = game.Load.Subscribe (WindowHandlers.load game)
+    use resizeSubscription = game.Resize.Subscribe (WindowHandlers.resize game)   
 
     (*Below, the game state is being stored in a reference cell instead of being passed through the observable functions
         The reason is that my original approach that passed the state on directly caused a memory leak. 
