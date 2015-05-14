@@ -9,6 +9,8 @@ open OpenTK.Input
 
 open System.Drawing
 
+let draw f = f
+
 let triangle corners =
     PrimitiveType.Triangles |> GL.Begin
     corners
