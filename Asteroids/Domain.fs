@@ -1,13 +1,17 @@
 ﻿module Domain
 
+open System.Drawing
+
 open Geometry
       
 type Ship = { Position: Point; Velocity: Vector } with
-    member this.Verticies = [
-        { X = this.Position.X - 0.1;   Y = this.Position.Y - 0.1 }
-        { X = this.Position.X + 0.1;  Y = this.Position.Y - 0.1 }
-        { X = this.Position.X;        Y = this.Position.Y + 0.1 }
-    ]
+    member this.Verticies = 
+        let points = 
+            [{ X = this.Position.X - 0.1;   Y = this.Position.Y - 0.1 }
+             { X = this.Position.X + 0.1;  Y = this.Position.Y - 0.1 }
+             { X = this.Position.X;        Y = this.Position.Y + 0.1 }]
+        let colors = [Color.Red; Color.Red; Color.Blue]
+        List.zip colors points
 
 type GameRunning =
     | Continue
