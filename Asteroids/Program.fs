@@ -46,7 +46,7 @@ let main _ =
         GL.MatrixMode(MatrixMode.Modelview)
         GL.LoadMatrix(&modelview)
 
-        drawShip state.Ship
+        state.Ship.Verticies |> Render.triangle
 
         // Game is double buffered
         game.SwapBuffers()
