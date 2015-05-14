@@ -7,8 +7,8 @@ open OpenTK.Graphics
 open OpenTK.Graphics.OpenGL
 open OpenTK.Input
 
-open Geometry
 open Domain
+open Geometry
 open Render
 
 (*

@@ -1,11 +1,6 @@
 ﻿module Render
 
-open Domain
-
-open OpenTK
-open OpenTK.Graphics
 open OpenTK.Graphics.OpenGL
-open OpenTK.Input
 
 open System.Drawing
 
