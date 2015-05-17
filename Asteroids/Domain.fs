@@ -4,13 +4,19 @@ open System.Drawing
 
 open Geometry
       
-type Ship = { Position: Point; Velocity: Vector } with
+module Settings =
+    let RotateSpeed = 15.0<degree>
+    let MoveSpeed = 0.05
+
+type Ship = { Position: Point; Velocity: Vector; Orientation: float<degree> } with
     member this.Verticies = 
+        let rotate = rotatePoint 0.1
+        let angleOffset = this.Orientation + 90.0<degree>
         let points = 
-            [{ X = this.Position.X - 0.1;   Y = this.Position.Y - 0.1 }
-             { X = this.Position.X + 0.1;  Y = this.Position.Y - 0.1 }
-             { X = this.Position.X;        Y = this.Position.Y + 0.1 }]
-        let colors = [Color.Red; Color.Red; Color.Blue]
+            [this.Position |> (rotate <| 0.0<degree> + angleOffset)
+             this.Position |> (rotate <| 120.0<degree> + angleOffset)
+             this.Position |> (rotate <| -120.0<degree> + angleOffset)]
+        let colors = [Color.Blue; Color.Red; Color.Red]
         List.zip colors points
 
 type GameRunning =
@@ -27,9 +33,10 @@ type GameState = {
 type UserStateChange = 
     | EndGame
     | ChangePosition of Point 
+    | Rotate of float<degree>
     | NoChange
 
 let initialState = { 
     Running = Continue
-    Ship = { Position = {X = 0.0; Y = 0.0;}; Velocity = {Dx = 0.0; Dy = 0.0} }
+    Ship = { Position = {X = 0.0; Y = 0.0;}; Velocity = {Dx = 0.0; Dy = 0.0}; Orientation = 0.0<degree> }
 }

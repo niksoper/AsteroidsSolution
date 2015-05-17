@@ -46,7 +46,7 @@ let main _ =
         GL.MatrixMode(MatrixMode.Modelview)
         GL.LoadMatrix(&modelview)
 
-        state.Ship.Verticies |> draw triangle
+        state.Ship |> draw ship
 
         // Game is double buffered
         game.SwapBuffers()
@@ -56,19 +56,24 @@ let main _ =
     let keyDown (args: KeyboardKeyEventArgs) =
         match args.Key with
         | Key.Escape ->  UserStateChange.EndGame
-        | Key.Up -> UserStateChange.ChangePosition {X = 0.0; Y = 0.01}
-        | Key.Down -> UserStateChange.ChangePosition {X = 0.0; Y = -0.01}
-        | Key.Right -> UserStateChange.ChangePosition {X = -0.01; Y = 0.0}
-        | Key.Left -> UserStateChange.ChangePosition {X = 0.01; Y = 0.0}
+        | Key.Up -> UserStateChange.ChangePosition {X = 0.0; Y = Domain.Settings.MoveSpeed}
+        | Key.Down -> UserStateChange.ChangePosition {X = 0.0; Y = -Domain.Settings.MoveSpeed}
+        | Key.Right -> UserStateChange.Rotate Domain.Settings.RotateSpeed
+        | Key.Left -> UserStateChange.Rotate -Domain.Settings.RotateSpeed
         | _ -> UserStateChange.NoChange
 
     let updateGameState (state: GameState)  change = 
         match change with 
-        | ChangePosition posChange-> 
+        | ChangePosition posChange -> 
             let pos = state.Ship.Position
             let newPos = {X = pos.X + posChange.X; Y = pos.Y + posChange.Y}
             printfn "%A" newPos // Delete this line: This is only to show bounds of coordinates. 
             let newShip = {state.Ship with Position = newPos}
+            {state with Ship = newShip}
+        | Rotate rotation ->
+            let newOrientation = (state.Ship.Orientation + rotation) % 360.0<degree>
+            let newShip = { state.Ship with Orientation = newOrientation}
+            printfn "%A" newShip.Orientation
             {state with Ship = newShip}
         | EndGame -> {state with Running=Stop}
         | NoChange -> state
