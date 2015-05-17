@@ -56,27 +56,23 @@ let main _ =
     let keyDown (args: KeyboardKeyEventArgs) =
         match args.Key with
         | Key.Escape ->  UserStateChange.EndGame
-        | Key.Up -> UserStateChange.ChangePosition {X = 0.0; Y = Domain.Settings.MoveSpeed}
-        | Key.Down -> UserStateChange.ChangePosition {X = 0.0; Y = -Domain.Settings.MoveSpeed}
+        | Key.Up -> SpeedUp
+        | Key.Down -> SlowDown
         | Key.Right -> UserStateChange.Rotate Domain.Settings.RotateSpeed
         | Key.Left -> UserStateChange.Rotate -Domain.Settings.RotateSpeed
         | _ -> UserStateChange.NoChange
 
     let updateGameState (state: GameState)  change = 
-        match change with 
-        | ChangePosition posChange -> 
-            let pos = state.Ship.Position
-            let newPos = {X = pos.X + posChange.X; Y = pos.Y + posChange.Y}
-            printfn "%A" newPos // Delete this line: This is only to show bounds of coordinates. 
-            let newShip = {state.Ship with Position = newPos}
-            {state with Ship = newShip}
-        | Rotate rotation ->
-            let newOrientation = (state.Ship.Orientation + rotation) % 360.0<degree>
-            let newShip = { state.Ship with Orientation = newOrientation}
-            printfn "%A" newShip.Orientation
-            {state with Ship = newShip}
-        | EndGame -> {state with Running=Stop}
-        | NoChange -> state
+        let newState = 
+            match change with 
+            | ChangePosition posChange  -> {state with Ship = state.Ship |> ShipChange.move}
+            | Rotate rotation           -> {state with Ship = state.Ship |> ShipChange.rotate rotation}
+            | SpeedUp                   -> {state with Ship = state.Ship |> ShipChange.thrust}
+            | SlowDown                  -> {state with Ship = state.Ship |> ShipChange.reverse}
+            | EndGame                   -> {state with Running=Stop}
+            | NoChange                  -> state
+        printfn "%A" newState
+        newState
 
     use loadSubscription = game.Load.Subscribe (WindowHandlers.load game)
     use resizeSubscription = game.Resize.Subscribe (WindowHandlers.resize game)   
