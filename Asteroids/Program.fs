@@ -71,8 +71,22 @@ let main _ =
             | SlowDown                  -> {state with Ship = state.Ship |> ShipChange.reverse}
             | EndGame                   -> {state with Running=Stop}
             | NoChange                  -> state
-        printfn "%A" newState
+        //printfn "%A" newState
         newState
+
+    let tick (state: GameState) (e: FrameEventArgs) = 
+        let s = state.Ship
+        let newShip = 
+            match s.Thrust with
+            | None -> 
+                //printfn "Not moving!"
+                s
+            | Forward -> 
+                let newPosition = {X = s.Position.X; Y = s.Position.Y + 0.01}
+                //printfn "%A" newPosition
+                {state.Ship with Position = newPosition}
+        let newTime = state.Time + e.Time
+        {state with Time = newTime; Ship = newShip}
 
     use loadSubscription = game.Load.Subscribe (WindowHandlers.load game)
     use resizeSubscription = game.Resize.Subscribe (WindowHandlers.resize game)   
@@ -99,8 +113,10 @@ let main _ =
 
     use updateFrameSub = 
         game.UpdateFrame
+        |> Observable.scan tick !currentGameState 
         |> Observable.subscribe(fun _ -> updateFrame !currentGameState)
         
     game.Run(60.0)
 
     0 
+

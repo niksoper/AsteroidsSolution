@@ -34,6 +34,7 @@ type GameRunning =
     | Stop
 
 type GameState = {
+    Time: double
     Running : GameRunning
     Ship : Ship
 }
@@ -49,6 +50,7 @@ type UserStateChange =
     | NoChange
 
 let initialState = { 
+    Time = 0.0
     Running = Continue
     Ship = 
     { 
