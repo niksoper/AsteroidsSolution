@@ -20,9 +20,13 @@ let main _ =
     let mouseDownStream = mapSingleWhen game.MouseDown
     let keyDownStream   = mapSingleWhen game.KeyDown
 
-    let merged = Observable.merge mouseDownStream keyDownStream
+    let printCount stream =
+        stream
+        |> Observable.scan (+) 0
+        |> Observable.add print
 
-    merged |> Observable.add print
+    printCount mouseDownStream 
+    printCount keyDownStream 
 
     game.Run(60.0)
 
