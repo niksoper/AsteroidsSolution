@@ -13,19 +13,16 @@ let main _ =
     let print x = printfn "%A" x
     let mapSingle x = 1
 
-    let printSingleWhen event =
+    let mapSingleWhen event =
         event
         |> Observable.map mapSingle
-        |> Observable.subscribe print
 
-    use mouseSub = printSingleWhen game.MouseDown
-    use keySub = printSingleWhen game.KeyDown
+    let mouseDownStream = mapSingleWhen game.MouseDown
+    let keyDownStream   = mapSingleWhen game.KeyDown
 
-    game.KeyDown
-    |> Observable.filter (fun args -> args.Key = Key.Escape)
-    |> Observable.add (fun _ -> 
-        print "Disposing mouse down subscription"
-        mouseSub.Dispose())
+    let merged = Observable.merge mouseDownStream keyDownStream
+
+    merged |> Observable.add print
 
     game.Run(60.0)
 
