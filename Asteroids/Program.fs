@@ -19,15 +19,18 @@ let main _ =
     let checkEven x = 
         x % 2 = 0
 
-    let printSingleIf predicate event =
+    let timesTenIf predicate x =
+        if predicate x then Some(x*10) else None
+
+    let printTimesTenIf predicate event =
         event
         |> Observable.map mapRandom
-        |> Observable.filter predicate
+        |> Observable.choose (timesTenIf predicate)
         |> Observable.subscribe print
 
-    use mouseDownSub    = game.MouseDown |> printSingleIf checkEven
-    use keyDownSub      = game.KeyDown |> printSingleIf checkEven
-
+    use mouseDownSub    = game.MouseDown |> printTimesTenIf checkEven
+    use keyDownSub      = game.KeyDown |> printTimesTenIf checkEven
+    
     game.Run(60.0)
 
     0 
