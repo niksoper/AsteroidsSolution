@@ -11,23 +11,22 @@ let main _ =
     use game = new GameWindow(800, 600, GraphicsMode.Default, "Asteroids")
             
     let print x = printfn "%A" x
-    let mapSingle x = 1
 
-    let mapSingleWhen event =
+    let mapRandom x = 
+        let rnd = new Random();
+        rnd.Next(10)
+
+    let checkEven x = 
+        x % 2 = 0
+
+    let printSingleIf predicate event =
         event
-        |> Observable.map mapSingle
+        |> Observable.map mapRandom
+        |> Observable.filter predicate
+        |> Observable.subscribe print
 
-    let mouseDownStream = mapSingleWhen game.MouseDown
-    let keyDownStream   = mapSingleWhen game.KeyDown
-
-    let merged = Observable.merge mouseDownStream keyDownStream
-
-    let printCount stream =
-        stream
-        |> Observable.scan (+) 0
-        |> Observable.add print
-
-    printCount merged 
+    use mouseDownSub    = game.MouseDown |> printSingleIf checkEven
+    use keyDownSub      = game.KeyDown |> printSingleIf checkEven
 
     game.Run(60.0)
 
