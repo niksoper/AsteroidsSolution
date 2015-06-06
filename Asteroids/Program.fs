@@ -1,6 +1,7 @@
 ﻿module Program
 
 open System
+open System.Drawing
 
 open OpenTK
 open OpenTK.Graphics
@@ -8,28 +9,19 @@ open OpenTK.Input
 
 [<EntryPoint>]
 let main _ = 
-    use game = new GameWindow(800, 600, GraphicsMode.Default, "Asteroids")
-            
-    let print x = printfn "%A" x
 
-    let mapRandom x = 
-        let rnd = new Random();
-        rnd.Next(10)
+    use game = new GameWindow(800, 600, GraphicsMode.Default, "Observable")
 
-    let checkEven x = 
-        x % 2 = 0
+    let higherOrLower = function
+        | a,b when a > b -> "Higher!"
+        | a,b when a < b -> "Lower!"
+        | _ -> "Same"
 
-    let timesTenIf predicate x =
-        if predicate x then Some(x*10) else None
-
-    let printTimesTenIf predicate event =
-        event
-        |> Observable.map mapRandom
-        |> Observable.choose (timesTenIf predicate)
-        |> Observable.subscribe print
-
-    use mouseDownSub    = game.MouseDown |> printTimesTenIf checkEven
-    use keyDownSub      = game.KeyDown |> printTimesTenIf checkEven
+    game.MouseDown
+    |> Observable.map (fun args -> args.Y)
+    |> Observable.pairwise
+    |> Observable.map higherOrLower
+    |> Observable.add (fun msg -> printfn "%s" msg)
     
     game.Run(60.0)
 
