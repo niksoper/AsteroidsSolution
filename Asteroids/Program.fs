@@ -11,17 +11,21 @@ open OpenTK.Input
 let main _ = 
 
     use game = new GameWindow(800, 600, GraphicsMode.Default, "Observable")
+    
+    let mapRandom x = 
+        let rnd = new Random();
+        rnd.Next(10)
 
-    let higherOrLower = function
-        | a,b when a > b -> "Higher!"
-        | a,b when a < b -> "Lower!"
-        | _ -> "Same"
+    let checkEven x = 
+        x % 2 = 0
 
-    game.MouseDown
-    |> Observable.map (fun args -> args.Y)
-    |> Observable.pairwise
-    |> Observable.map higherOrLower
-    |> Observable.add (fun msg -> printfn "%s" msg)
+    let evens, odds = 
+        game.MouseDown
+        |> Observable.map mapRandom
+        |> Observable.partition checkEven
+
+    evens |> Observable.add (fun even -> printfn "%d!!! We love even numbers :=D" even)
+    odds |> Observable.add (fun odd -> printfn "%d. How sad, an odd number :-(" odd)
     
     game.Run(60.0)
 
