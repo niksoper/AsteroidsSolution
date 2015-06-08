@@ -6,7 +6,7 @@ open Geometry
 
 module Settings =
     let RotateSpeed = 9.0<degree>
-    let MoveSpeed = 0.05
+    let MoveSpeed = 0.000001
     let XMax = 2.2
     let YMax = 1.7
 
@@ -26,12 +26,13 @@ type Ship = {
     } with
 
     member this.Verticies = 
-        let rotate = rotatePoint 0.1
+        let rotateAboutPosition = rotate 0.1 this.Position.X this.Position.Y
         let angleOffset = this.Orientation
         let points = 
-            [this.Position |> (rotate <| 0.0<degree> + angleOffset)
-             this.Position |> (rotate <| 120.0<degree> + angleOffset)
-             this.Position |> (rotate <| -120.0<degree> + angleOffset)]
+            [rotateAboutPosition <| 0.0<degree> + angleOffset
+             rotateAboutPosition <| 120.0<degree> + angleOffset
+             rotateAboutPosition <| -120.0<degree> + angleOffset]
+             |> List.map (fun (x, y) -> {X = x; Y = y})
         let colors = [Color.Blue; Color.Red; Color.Red]
         List.zip colors points
 

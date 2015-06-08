@@ -15,7 +15,7 @@ let radians degrees = degrees / degreesPerRadian
 let cos (angle: float<degree>) = Math.Cos(float (radians angle))
 let sin (angle: float<degree>) = Math.Sin(float (radians angle))
 
-let rotatePoint length (angle: float<degree>) point =
-    let x =  length * (cos angle)
-    let y =  length * (sin angle)
-    { X = point.X + x; Y = point.Y + y}
+let rotate length x y angle =
+    let dx =  length * (cos angle)
+    let dy =  length * (sin angle)
+    (x + dx, y + dy)
