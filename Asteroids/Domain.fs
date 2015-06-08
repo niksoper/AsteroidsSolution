@@ -7,6 +7,8 @@ open Geometry
 module Settings =
     let RotateSpeed = 9.0<degree>
     let MoveSpeed = 0.05
+    let XMax = 2.2
+    let YMax = 1.7
 
 let print a = printfn "%A" a
 

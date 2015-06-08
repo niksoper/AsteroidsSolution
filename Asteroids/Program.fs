@@ -39,8 +39,12 @@ let main _ =
 
     let renderFrame (state: GameState)  =
 
+
         //OpenGL Stuff to set view
         GL.Clear(ClearBufferMask.ColorBufferBit ||| ClearBufferMask.DepthBufferBit)
+//        GL.MatrixMode(MatrixMode.Projection)
+//        GL.LoadIdentity()
+//        GL.Ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0)
         let mutable modelview = Matrix4.LookAt(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY)
         GL.MatrixMode(MatrixMode.Modelview)
         GL.LoadMatrix(&modelview)
