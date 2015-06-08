@@ -31,8 +31,3 @@ let private line (color: Color) (position: Geometry.Point * Geometry.Point) =
 let ship (s: Ship) =
     s.Verticies |> triangle
     s.Position |> dot Color.White
-    match s.Thrust with
-    | None -> ()
-    | Some _ -> 
-        let endPoint = s.Position |> Geometry.rotatePoint 0.1 (s.Orientation - 90.0<degree>)
-        line Color.Red (s.Position, endPoint)

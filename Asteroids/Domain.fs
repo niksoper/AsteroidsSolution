@@ -15,6 +15,7 @@ let print a = printfn "%A" a
 //    | None
 
 type Ship = { 
+        Age: float<second>
         Position: Point
         Thrust: float option
         Velocity: Vector
@@ -66,6 +67,7 @@ let initialState = {
     Running = Continue
     Ship = 
     { 
+        Age = 0.0<second>
         Position = {X = 0.0; Y = 0.0;}
         Thrust = None
         Velocity = {Dx = 0.0; Dy = 0.0}
