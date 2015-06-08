@@ -9,7 +9,6 @@ open OpenTK.Input
 
 open Domain
 open Geometry
-open Render
 
 (*
     Note: While we are calling this an Asteroids clone, we may deviate from it...
@@ -33,7 +32,7 @@ open Render
 let main _ = 
     use game = new GameWindow(800, 600, GraphicsMode.Default, "Asteroids")
 
-    let updateFrame (state :GameState) =
+    let checkStillRunning (state :GameState) =
         match state.Running with 
         | Continue -> ()
         | Stop -> game.Exit()
@@ -46,75 +45,45 @@ let main _ =
         GL.MatrixMode(MatrixMode.Modelview)
         GL.LoadMatrix(&modelview)
 
-        state.Ship |> draw ship
+        state.Ship |> Render.ship
 
         // Game is double buffered
         game.SwapBuffers()
 
-    //Handle keydownEvents and transform them into state changes 
-    //Hint (To get the best behaviour, you may need to deal with key up, etc events)
-    let keyDown (args: KeyboardKeyEventArgs) =
-        match args.Key with
-        | Key.Escape ->  UserStateChange.EndGame
-        | Key.Up -> SpeedUp
-        | Key.Down -> SlowDown
-        | Key.Right -> UserStateChange.Rotate Domain.Settings.RotateSpeed
-        | Key.Left -> UserStateChange.Rotate -Domain.Settings.RotateSpeed
-        | _ -> UserStateChange.NoChange
+    let keyDown   = game.KeyDown |> Observable.map Keyboard.keyDownStateChange
+    let keyUp     = game.KeyUp |> Observable.map Keyboard.keyUpStateChange
+    
+    let keyboard  = Observable.merge keyDown keyUp
 
-    let updateGameState (state: GameState)  change = 
-        let newState = 
-            match change with 
-            | ChangePosition posChange  -> {state with Ship = state.Ship |> ShipChange.move}
-            | Rotate rotation           -> {state with Ship = state.Ship |> ShipChange.rotate rotation}
-            | SpeedUp                   -> {state with Ship = state.Ship |> ShipChange.thrust}
-            | SlowDown                  -> {state with Ship = state.Ship |> ShipChange.reverse}
-            | EndGame                   -> {state with Running=Stop}
-            | NoChange                  -> state
-        //printfn "%A" newState
-        newState
+    let tick      = game.UpdateFrame |> Observable.map (fun t -> Tick (t.Time * 1.0<second>))
 
-    let tick (state: GameState) (e: FrameEventArgs) = 
-        let s = state.Ship
-        let newShip = 
-            match s.Thrust with
-            | None -> 
-                //printfn "Not moving!"
-                s
-            | Forward -> 
-                let newPosition = {X = s.Position.X; Y = s.Position.Y + 0.01}
-                //printfn "%A" newPosition
-                {state.Ship with Position = newPosition}
-        let newTime = state.Time + e.Time
-        {state with Time = newTime; Ship = newShip}
+    let keyboardAndTime = Observable.merge keyboard tick
 
-    use loadSubscription = game.Load.Subscribe (WindowHandlers.load game)
-    use resizeSubscription = game.Resize.Subscribe (WindowHandlers.resize game)   
+    game.Load   |> Observable.add (WindowHandlers.load game)
+    game.Resize |> Observable.add (WindowHandlers.resize game)   
 
-    (*Below, the game state is being stored in a reference cell instead of being passed through the observable functions
-        The reason is that my original approach that passed the state on directly caused a memory leak. 
-        I'm not sure if it was due to my original code, or an issue with the library, but this a simple alternative that means the code is nearly the same,
-        with a little local mutability.
-        
-        Also, reference cell is used instead of a mutable value because mutable values cannot be captured by lambdas. 
-        For a longer explaination see: https://lorgonblog.wordpress.com/2008/11/12/on-lambdas-capture-and-mutability/ 
-        Also msdn reference : https://msdn.microsoft.com/en-us/library/dd233186.aspx*)
+    let updateGameState (state: GameState) change =
+        match change with
+        | StartAccelerate a -> {state with Ship = state.Ship |> ShipChange.accelerate a}
+        | StopAccelerate    -> {state with Ship = state.Ship |> ShipChange.accelerate 0.0}
+        | StartRotate spin  -> {state with Ship = state.Ship |> ShipChange.updateSpin spin}
+        | StopRotate        -> {state with Ship = state.Ship |> ShipChange.updateSpin 0.0<degree>}
+        | Tick t            -> {state with Ship = state.Ship |> ShipChange.move t}
+        | EndGame           -> {state with Running = Stop}
+        | NoChange          -> state
+
+
     let currentGameState = ref Domain.initialState
 
-    use updateGameStateSub = 
-        game.KeyDown
-        |> Observable.map keyDown
-        |> Observable.scan updateGameState Domain.initialState 
-        |> Observable.subscribe (fun state -> currentGameState := state)
+    keyboardAndTime
+    |> Observable.scan updateGameState Domain.initialState 
+    |> Observable.add (fun state -> currentGameState := state)
 
-    use renderFrameSub = 
-        game.RenderFrame
-        |> Observable.subscribe(fun _ -> renderFrame !currentGameState)
+    game.RenderFrame
+    |> Observable.add (fun _ -> renderFrame !currentGameState)
 
-    use updateFrameSub = 
-        game.UpdateFrame
-        |> Observable.scan tick !currentGameState 
-        |> Observable.subscribe(fun _ -> updateFrame !currentGameState)
+    game.UpdateFrame
+    |> Observable.add (fun _ -> checkStillRunning !currentGameState)
         
     game.Run(60.0)
 

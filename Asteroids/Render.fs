@@ -6,22 +6,21 @@ open System.Drawing
 open Domain
 open Geometry
 
-let Z = 4.0
-let draw f = f
+let private Z = 4.0
 
-let triangle coloredCorners =
+let private triangle coloredCorners =
     PrimitiveType.Triangles |> GL.Begin
     coloredCorners
     |> List.iter (fun (c: Color, p: Geometry.Point) -> GL.Color3(c); GL.Vertex3(p.X, p.Y, Z))
     GL.End()
 
-let dot (color: Color) (position: Geometry.Point) =
+let private dot (color: Color) (position: Geometry.Point) =
     PrimitiveType.Points |> GL.Begin
     GL.Color3(color)
     GL.Vertex3(position.X, position.Y, Z)
     GL.End()
 
-let line (color: Color) (position: Geometry.Point * Geometry.Point) =
+let private line (color: Color) (position: Geometry.Point * Geometry.Point) =
     let p1, p2 = position
     PrimitiveType.Lines |> GL.Begin
     GL.Color3(color)
@@ -30,10 +29,10 @@ let line (color: Color) (position: Geometry.Point * Geometry.Point) =
     GL.End()
 
 let ship (s: Ship) =
-    s.Verticies |> draw triangle
-    s.Position |> draw dot Color.White
+    s.Verticies |> triangle
+    s.Position |> dot Color.White
     match s.Thrust with
     | None -> ()
-    | Forward -> 
+    | Some _ -> 
         let endPoint = s.Position |> Geometry.rotatePoint 0.1 (s.Orientation - 90.0<degree>)
-        draw line Color.Red (s.Position, endPoint)
+        line Color.Red (s.Position, endPoint)
