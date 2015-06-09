@@ -4,17 +4,7 @@ open System.Drawing
 
 open Physics
 
-module Settings =
-    let RotateSpeed = 9.0<degree>
-    let Acceleration = 0.005
-    let Braking = -0.002
-    let XMax = 2.2
-    let YMax = 1.7
-
-let print a = printfn "%A" a
-
 type Ship = { 
-        Age: float<second>
         Position: Point
         Thrust: float option
         Velocity: Vector
@@ -38,13 +28,10 @@ type GameRunning =
     | Stop
 
 type GameState = {
-    Time: double
     Running : GameRunning
     Ship : Ship
 }
 
-//For state changes based on user events. 
-//Probably a good idea to have a seperate union for state changes base on internal game events
 type UserStateChange = 
     | EndGame
     | ChangePosition of Point 
@@ -63,11 +50,9 @@ type TriggerStateChange =
     | NoChange
 
 let initialState = { 
-    Time = 0.0
     Running = Continue
     Ship = 
     { 
-        Age = 0.0<second>
         Position = {X = 0.0; Y = 0.0;}
         Thrust = None
         Velocity = {Direction = 90.0<degree>; Magnitude = 0.0}

@@ -12,8 +12,8 @@ type Vector = { Direction: float<degree>; Magnitude: float }
 let degreesPerRadian = 57.2957795131<degree/radian>
 let radians degrees = degrees / degreesPerRadian
 
-let cos (angle: float<degree>) = Math.Cos(float (radians angle))
-let sin (angle: float<degree>) = Math.Sin(float (radians angle))
+let cos angle = Math.Cos(float (radians angle))
+let sin angle = Math.Sin(float (radians angle))
 
 let rotate length x y angle =
     let dx =  length * (cos angle)
@@ -21,7 +21,8 @@ let rotate length x y angle =
     (x + dx, y + dy)
 
 let updatePosition v pos = 
-    rotate v.Magnitude pos.X pos.Y v.Direction
+    let x,y = rotate v.Magnitude pos.X pos.Y v.Direction
+    {X = x; Y = y}
 
 let private constrain min max m =
     if m > max then max
@@ -30,5 +31,4 @@ let private constrain min max m =
 
 let updateVelocity a v = 
     let m = v.Magnitude + a
-
-    {v with Magnitude = m |> constrain 0.0 0.07}
+    {v with Magnitude = m |> constrain 0.0 0.05}

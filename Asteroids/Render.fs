@@ -4,7 +4,6 @@ open OpenTK.Graphics.OpenGL
 open System.Drawing
 
 open Domain
-open Physics
 
 let private Z = 4.0
 
