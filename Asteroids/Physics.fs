@@ -23,5 +23,12 @@ let rotate length x y angle =
 let updatePosition v pos = 
     rotate v.Magnitude pos.X pos.Y v.Direction
 
+let private constrain max m =
+    if m > max then max
+    else m
+
 let updateVelocity a v = 
-    {v with Magnitude = v.Magnitude + a}
+    let max = 0.07
+    let m = v.Magnitude + a
+
+    {v with Magnitude = m |> constrain max}
