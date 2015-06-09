@@ -30,7 +30,9 @@ let move t ship =
     
     let newV = 
         match ship.Thrust with
-        | Some a    -> updateVelocity a v
+        | Some a    -> 
+            let thrustVelocity = {v with Direction = ship.Orientation}
+            updateVelocity a thrustVelocity
         | None      -> v
 
     let x,y = p |> updatePosition newV

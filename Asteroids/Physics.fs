@@ -24,5 +24,4 @@ let updatePosition v pos =
     rotate v.Magnitude pos.X pos.Y v.Direction
 
 let updateVelocity a v = 
-    printfn "%A" a
     {v with Magnitude = v.Magnitude + a}
