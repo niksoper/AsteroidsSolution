@@ -35,9 +35,8 @@ let private thruster (color: Color) s =
         let y = s.Position.Y
         let lineLength = 0.2
         let lineAngle = 
-            match a with
-            | a' when a' > 0.0 -> s.Orientation - 180.0<degree>
-            | _ -> s.Orientation
+            if a > 0.0 then s.Orientation - 180.0<degree>
+            else s.Orientation
         let ex,ey = Physics.rotate lineLength x y lineAngle
         let lineEnd = {X = ex; Y = ey}
         line color (s.Position, lineEnd)
