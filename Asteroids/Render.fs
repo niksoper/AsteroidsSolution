@@ -28,7 +28,7 @@ let private line (color: Color) (position: Physics.Point * Physics.Point) =
     GL.Vertex3(p2.X, p2.Y, Z)
     GL.End()
 
-let private thruster s =
+let private thruster (color: Color) s =
     match s.Thrust with
     | Some a ->
         let x = s.Position.X
@@ -40,10 +40,10 @@ let private thruster s =
             | _ -> s.Orientation
         let ex,ey = Physics.rotate lineLength x y lineAngle
         let lineEnd = {X = ex; Y = ey}
-        line Color.Gold (s.Position, lineEnd)
+        line color (s.Position, lineEnd)
     | None -> ()
 
 let ship (s: Ship) =
     s.Verticies |> triangle
     s.Position |> dot Color.White
-    s |> thruster
+    s |> thruster Color.Gold
