@@ -7,6 +7,7 @@ open Physics
 module Settings =
     let RotateSpeed = 9.0<degree>
     let Acceleration = 0.005
+    let Braking = -0.002
     let XMax = 2.2
     let YMax = 1.7
 
