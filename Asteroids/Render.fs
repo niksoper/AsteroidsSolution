@@ -3,6 +3,7 @@
 open OpenTK.Graphics.OpenGL
 open System.Drawing
 
+open Physics
 open Domain
 
 let private Z = 4.0
@@ -27,6 +28,22 @@ let private line (color: Color) (position: Physics.Point * Physics.Point) =
     GL.Vertex3(p2.X, p2.Y, Z)
     GL.End()
 
+let private thruster s =
+    match s.Thrust with
+    | Some a ->
+        let x = s.Position.X
+        let y = s.Position.Y
+        let lineLength = 0.2
+        let lineAngle = 
+            match a with
+            | a' when a' > 0.0 -> s.Orientation - 180.0<degree>
+            | _ -> s.Orientation
+        let ex,ey = Physics.rotate lineLength x y lineAngle
+        let lineEnd = {X = ex; Y = ey}
+        line Color.Gold (s.Position, lineEnd)
+    | None -> ()
+
 let ship (s: Ship) =
     s.Verticies |> triangle
     s.Position |> dot Color.White
+    s |> thruster
