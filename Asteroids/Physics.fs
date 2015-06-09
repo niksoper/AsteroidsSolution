@@ -23,12 +23,12 @@ let rotate length x y angle =
 let updatePosition v pos = 
     rotate v.Magnitude pos.X pos.Y v.Direction
 
-let private constrain max m =
+let private constrain min max m =
     if m > max then max
+    elif m < min then min
     else m
 
 let updateVelocity a v = 
-    let max = 0.07
     let m = v.Magnitude + a
 
-    {v with Magnitude = m |> constrain max}
+    {v with Magnitude = m |> constrain 0.0 0.07}
