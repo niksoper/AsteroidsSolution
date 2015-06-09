@@ -7,7 +7,7 @@ open Physics
 open Domain
 
 let rotateSpeed     = 9.0<degree>
-let acceleration    = 0.005
+let acceleration    = 0.004
 let braking         = -0.002
 
 let private keyDownStateChange (keyArgs: KeyboardKeyEventArgs) =

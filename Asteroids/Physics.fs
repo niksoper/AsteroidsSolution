@@ -31,4 +31,4 @@ let private constrain min max m =
 
 let updateVelocity a v = 
     let m = v.Magnitude + a
-    {v with Magnitude = m |> constrain 0.0 0.05}
+    {v with Magnitude = m |> constrain -0.02 0.05}
