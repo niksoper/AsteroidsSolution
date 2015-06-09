@@ -54,7 +54,7 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-    <Compile Include="Geometry.fs" />
+    <Compile Include="Physics.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="ShipChange.fs" />
     <Compile Include="WindowHandlers.fs" />

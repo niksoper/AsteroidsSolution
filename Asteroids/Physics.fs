@@ -1,4 +1,4 @@
-﻿module Geometry
+﻿module Physics
 
 open System
 
@@ -7,7 +7,7 @@ open System
 [<Measure>] type second
 
 type Point = { X: float; Y: float }
-type Vector = { Dx: float; Dy: float }
+type Vector = { Direction: float<degree>; Magnitude: float }
 
 let degreesPerRadian = 57.2957795131<degree/radian>
 let radians degrees = degrees / degreesPerRadian
@@ -19,3 +19,10 @@ let rotate length x y angle =
     let dx =  length * (cos angle)
     let dy =  length * (sin angle)
     (x + dx, y + dy)
+
+let updatePosition v pos = 
+    rotate v.Magnitude pos.X pos.Y v.Direction
+
+let updateVelocity a v = 
+    printfn "%A" a
+    {v with Magnitude = v.Magnitude + a}

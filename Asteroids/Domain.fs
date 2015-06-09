@@ -2,19 +2,15 @@
 
 open System.Drawing
 
-open Geometry
+open Physics
 
 module Settings =
     let RotateSpeed = 9.0<degree>
-    let MoveSpeed = 0.000001
+    let Acceleration = 0.005
     let XMax = 2.2
     let YMax = 1.7
 
 let print a = printfn "%A" a
-
-//type Thrust =
-//    | Forward of float
-//    | None
 
 type Ship = { 
         Age: float<second>
@@ -73,7 +69,7 @@ let initialState = {
         Age = 0.0<second>
         Position = {X = 0.0; Y = 0.0;}
         Thrust = None
-        Velocity = {Dx = 0.0; Dy = 0.0}
+        Velocity = {Direction = 90.0<degree>; Magnitude = 0.0}
         Orientation = 90.0<degree> 
         Spin = 0.0<degree>
     }

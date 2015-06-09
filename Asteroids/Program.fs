@@ -8,7 +8,7 @@ open OpenTK.Graphics.OpenGL
 open OpenTK.Input
 
 open Domain
-open Geometry
+open Physics
 
 (*
     Note: While we are calling this an Asteroids clone, we may deviate from it...
@@ -69,7 +69,7 @@ let main _ =
     let updateGameState (state: GameState) change =
         match change with
         | StartAccelerate a -> {state with Ship = state.Ship |> ShipChange.accelerate a}
-        | StopAccelerate    -> state
+        | StopAccelerate    -> {state with Ship = state.Ship |> ShipChange.coast}
         | StartRotate spin  -> {state with Ship = state.Ship |> ShipChange.updateSpin spin}
         | StopRotate        -> {state with Ship = state.Ship |> ShipChange.updateSpin 0.0<degree>}
         | Tick t            -> {state with Ship = state.Ship |> ShipChange.move t}
