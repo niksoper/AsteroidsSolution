@@ -22,7 +22,7 @@ let createIrregular points minRadius maxRadius = {
 
 let randomVelocity() = {
     Direction = Random.direction()
-    Magnitude = Random.between 0.005 0.03
+    Magnitude = Random.between 0.005 0.015
 }
     
 let createMany n create = 

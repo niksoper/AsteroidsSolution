@@ -51,7 +51,7 @@ type TriggerStateChange =
     | EndGame
     | NoChange
 
-let asteroids = Asteroid.createMany 5 (fun () -> Asteroid.createIrregular 9 0.1 0.5)
+let asteroids = Asteroid.createMany 5 (fun () -> Asteroid.createIrregular 9 0.03 0.3)
 
 let initialState = { 
     Running = Continue
