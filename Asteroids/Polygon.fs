@@ -2,12 +2,12 @@
 
 open Physics
 
-let private make points pointRadius =
+let private make points createRadius =
     let a = 360 / points
     [ 
         for i in 1 .. points do
             yield { 
-                Magnitude = pointRadius()
+                Magnitude = createRadius()
                 Direction = (i * a) |> float |> degree
             } 
     ]

@@ -4,7 +4,8 @@ open OpenTK.Graphics.OpenGL
 open System.Drawing
 
 open Physics
-open Domain
+open Ship
+open Game
 
 let private Z = 4.0
 
@@ -48,7 +49,7 @@ let private thruster (color: Color) s =
         line color (s.Position, lineEnd)
     | None -> ()
 
-let ship (s: Ship) =
+let ship (s: Ship.T) =
     s.Verticies |> triangle
     s.Position |> dot Color.White
     s |> thruster Color.Gold

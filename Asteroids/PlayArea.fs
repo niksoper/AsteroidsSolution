@@ -2,10 +2,10 @@
 
 open Physics
 
-let xMax = 2.2
-let yMax = 1.7
+let private xMax = 2.2
+let private yMax = 1.7
 
-let constrain pos =
+let wrap pos =
     let xBound = 
         if pos.X > xMax then -xMax
         elif pos.X < -xMax then xMax

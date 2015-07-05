@@ -38,7 +38,7 @@ let moveOne asteroid =
     let newPos = 
         asteroid.Position 
         |> Physics.updatePosition asteroid.Velocity 
-        |> PlayArea.constrain
+        |> PlayArea.wrap
     {asteroid with Position = newPos}
 
 let moveAll asteroids = 

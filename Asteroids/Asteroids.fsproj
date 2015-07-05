@@ -59,10 +59,10 @@
     <Compile Include="Random.fs" />
     <Compile Include="PlayArea.fs" />
     <Compile Include="Polygon.fs" />
+    <Compile Include="Ship.fs" />
     <Compile Include="Asteroid.fs" />
-    <Compile Include="Domain.fs" />
+    <Compile Include="Game.fs" />
     <Compile Include="Render.fs" />
-    <Compile Include="ShipChange.fs" />
     <Compile Include="StateChange.fs" />
     <Compile Include="Keyboard.fs" />
     <Compile Include="Program.fs" />

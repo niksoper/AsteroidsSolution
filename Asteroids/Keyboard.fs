@@ -4,7 +4,7 @@ open OpenTK
 open OpenTK.Input
 
 open Physics
-open Domain
+open Game
 
 let rotateSpeed     = 9.0<degree>
 let acceleration    = 0.001
@@ -27,7 +27,7 @@ let private keyUpStateChange (keyArgs: KeyboardKeyEventArgs) =
     | Key.Right -> StopRotate
     | _         -> NoChange
 
-let stream (game: GameWindow) =
-    let keyDown  = game.KeyDown |> Observable.map keyDownStateChange
-    let keyUp    = game.KeyUp   |> Observable.map keyUpStateChange
+let stream (window: GameWindow) =
+    let keyDown  = window.KeyDown |> Observable.map keyDownStateChange
+    let keyUp    = window.KeyUp   |> Observable.map keyUpStateChange
     Observable.merge keyDown keyUp

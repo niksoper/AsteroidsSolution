@@ -5,44 +5,44 @@ open System
 open OpenTK
 open OpenTK.Graphics
 
-open Domain
+open Game
 open Physics
 
 [<EntryPoint>]
 let main _ = 
-    use game = new GameWindow(800, 600, GraphicsMode.Default, "Asteroids")
+    use window = new GameWindow(800, 600, GraphicsMode.Default, "Asteroids")
 
     let checkStillRunning state =
         match state.Running with 
         | Continue -> ()
-        | Stop -> game.Exit()
+        | Stop -> window.Exit()
 
     let renderFrame (state: GameState)  =
         WindowHandlers.clearAndSetMatrix()
         state.Ship |> Render.ship
         state.Asteroids |> Seq.iter Render.asteroid
-        game.SwapBuffers()
+        window.SwapBuffers()
 
-    game.Load   |> Observable.add (WindowHandlers.load game)
-    game.Resize |> Observable.add (WindowHandlers.resize game)   
+    window.Load   |> Observable.add (WindowHandlers.load window)
+    window.Resize |> Observable.add (WindowHandlers.resize window)   
 
-    let currentGameState = ref Domain.initialState
+    let currentGameState = ref Game.initialState
 
-    let keyboardStream = game |> Keyboard.stream
-    let tick = game.UpdateFrame |> Observable.map (fun t -> Tick (t.Time * 1.0<second>))
+    let keyboardStream = window |> Keyboard.stream
+    let tick = window.UpdateFrame |> Observable.map (fun t -> Tick (t.Time * 1.0<second>))
 
     keyboardStream
     |> Observable.merge tick
-    |> Observable.scan StateChange.update Domain.initialState 
+    |> Observable.scan StateChange.update Game.initialState 
     |> Observable.add (fun state -> currentGameState := state)
 
-    game.RenderFrame
+    window.RenderFrame
     |> Observable.add (fun _ -> renderFrame !currentGameState)
 
-    game.UpdateFrame
+    window.UpdateFrame
     |> Observable.add (fun _ -> checkStillRunning !currentGameState)
         
-    game.Run(60.0)
+    window.Run(60.0)
 
     0 
 

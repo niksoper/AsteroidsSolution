@@ -1,10 +1,10 @@
 ﻿module StateChange
 
 open Physics
-open Domain
+open Game
 
 let tick t state =
-    let newShip = state.Ship |> ShipChange.move t
+    let newShip = state.Ship |> Ship.move t
     let newAsteroids = state.Asteroids |> Asteroid.moveAll
     {state with 
         Ship = newShip
@@ -12,10 +12,10 @@ let tick t state =
 
 let update state change =
     match change with
-    | StartAccelerate a -> {state with Ship = state.Ship |> ShipChange.accelerate a}
-    | StopAccelerate    -> {state with Ship = state.Ship |> ShipChange.coast}
-    | StartRotate spin  -> {state with Ship = state.Ship |> ShipChange.updateSpin spin}
-    | StopRotate        -> {state with Ship = state.Ship |> ShipChange.updateSpin 0.0<degree>}
+    | StartAccelerate a -> {state with Ship = state.Ship |> Ship.accelerate a}
+    | StopAccelerate    -> {state with Ship = state.Ship |> Ship.coast}
+    | StartRotate spin  -> {state with Ship = state.Ship |> Ship.updateSpin spin}
+    | StopRotate        -> {state with Ship = state.Ship |> Ship.updateSpin 0.0<degree>}
     | EndGame           -> {state with Running = Stop}
     | Tick t            -> state |> tick t
     | NoChange          -> state
