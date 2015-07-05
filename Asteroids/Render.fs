@@ -28,6 +28,12 @@ let private line (color: Color) (position: Physics.Point * Physics.Point) =
     GL.Vertex3(p2.X, p2.Y, Z)
     GL.End()
 
+let private polygon (color: Color) (points: Point seq) =
+    points
+    |> Seq.pairwise
+    |> Seq.iter (fun pair -> line color pair)
+    line color (Seq.last points, Seq.head points)
+
 let private thruster (color: Color) s =
     match s.Thrust with
     | Some a ->
@@ -46,3 +52,8 @@ let ship (s: Ship) =
     s.Verticies |> triangle
     s.Position |> dot Color.White
     s |> thruster Color.Gold
+
+let asteroid (a: Asteroid.T) =
+    a.Shape
+    |> Seq.map (fun p -> updatePosition p a.Position)
+    |> polygon Color.Gray

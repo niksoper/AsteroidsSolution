@@ -20,6 +20,7 @@ let main _ =
     let renderFrame (state: GameState)  =
         WindowHandlers.clearAndSetMatrix()
         state.Ship |> Render.ship
+        state.Asteroids |> Seq.iter Render.asteroid
         game.SwapBuffers()
 
     game.Load   |> Observable.add (WindowHandlers.load game)

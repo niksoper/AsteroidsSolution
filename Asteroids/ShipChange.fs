@@ -4,21 +4,7 @@ open Physics
 
 open Domain
 
-
-let private constrain pos =
-    let xMax = 2.2
-    let yMax = 1.7
-    let xBound = 
-        if pos.X > xMax then -xMax
-        elif pos.X < -xMax then xMax
-        else pos.X
-    let yBound = 
-        if pos.Y > yMax then -yMax
-        elif pos.Y < -yMax then yMax
-        else pos.Y
-    {X = xBound; Y = yBound}
-    
-let private applyThrust a ship =
+let private applyThrust a (ship: Ship) =
     let thrustVelocity = {ship.Velocity with Direction = ship.Orientation}
     updateVelocity a thrustVelocity
     
@@ -40,7 +26,7 @@ let move t ship =
     let constrainedNewPos = 
         ship.Position
         |> updatePosition newVelocity
-        |> constrain
+        |> PlayArea.constrain
 
     let newOrientation = ship.Orientation + ship.Spin
 

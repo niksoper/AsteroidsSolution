@@ -3,6 +3,7 @@
 open System.Drawing
 
 open Physics
+open Asteroid
 
 type Ship = { 
         Position: Point
@@ -30,6 +31,7 @@ type GameRunning =
 type GameState = {
     Running : GameRunning
     Ship : Ship
+    Asteroids: Asteroid.T list
 }
 
 type UserStateChange = 
@@ -49,8 +51,11 @@ type TriggerStateChange =
     | EndGame
     | NoChange
 
+let asteroids = Asteroid.createMany 5 (fun () -> Asteroid.createIrregular 9 0.1 0.5)
+
 let initialState = { 
     Running = Continue
+    Asteroids = asteroids
     Ship = 
     { 
         Position = {X = 0.0; Y = 0.0;}

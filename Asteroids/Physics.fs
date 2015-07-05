@@ -9,6 +9,8 @@ open System
 type Point = { X: float; Y: float }
 type Vector = { Direction: float<degree>; Magnitude: float }
 
+let degree (f: float) = f * 1.0<degree> 
+
 let degreesPerRadian = 57.2957795131<degree/radian>
 let radians degrees = degrees / degreesPerRadian
 
