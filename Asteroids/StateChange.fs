@@ -5,7 +5,7 @@ open Domain
 
 let tick t state =
     let newShip = state.Ship |> ShipChange.move t
-    let newAsteroids = state.Asteroids |> Asteroid.move
+    let newAsteroids = state.Asteroids |> Asteroid.moveAll
     {state with 
         Ship = newShip
         Asteroids = newAsteroids}

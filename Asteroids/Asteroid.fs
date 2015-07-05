@@ -34,6 +34,13 @@ let createMany n create =
                                 Shape = a.Shape |> Polygon.rotate(Random.direction())
                           })
 
-let move asteroids =
+let moveOne asteroid =
+    let newPos = 
+        asteroid.Position 
+        |> Physics.updatePosition asteroid.Velocity 
+        |> PlayArea.constrain
+    {asteroid with Position = newPos}
+
+let moveAll asteroids = 
     asteroids 
-    |> List.map (fun a -> {a with Position = a.Position |> Physics.updatePosition a.Velocity |> PlayArea.constrain})
+    |> List.map moveOne
