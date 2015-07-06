@@ -34,6 +34,7 @@ type TriggerStateChange =
     | EndGame
     | NoChange
 
+
 let initialState = { 
     Running = Continue
     Asteroids = Asteroid.createMany 5 (fun () -> Asteroid.createIrregular 9 0.03 0.3)
@@ -47,3 +48,22 @@ let initialState = {
         Bullets = []
     }
 }
+
+let detectShipCollision state =
+    let collided = 
+        state.Asteroids
+        |> List.filter (Asteroid.collision state.Ship.Position Ship.Size)
+    match collided with
+    | [] -> printfn ""
+    | _ -> printfn "Ship"
+    state
+
+let detectBulletCollision state =
+    let hits = [for a in state.Asteroids do
+                for b in state.Ship.Bullets do
+                if a |> Asteroid.collision b.Position 0.0 then yield 1]
+    match List.sum hits with
+    | x when x > 0  -> printfn "Bullet"
+    | _             -> printfn ""
+    state
+    

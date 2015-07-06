@@ -6,7 +6,7 @@ open OpenTK.Input
 open Physics
 open Game
 
-let rotateSpeed     = 9.0<degree>
+let rotateSpeed     = 6.0<degree>
 let acceleration    = 0.001
 let braking         = -0.0008
 

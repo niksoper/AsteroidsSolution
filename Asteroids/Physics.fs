@@ -30,3 +30,9 @@ let constrain min max m =
     if m > max then max
     elif m < min then min
     else m
+
+let inRange p1 p2 range =
+    let dx = p1.X - p2.X
+    let dy = p1.Y - p2.Y
+    let distance = Math.Sqrt(dx*dx + dy*dy)
+    distance <= range

@@ -10,6 +10,8 @@ type Bullet = {
     Traveled: float
 }
 
+let Size = 0.1
+
 type T = { 
         Position: Point
         Thrust: float option
@@ -20,7 +22,7 @@ type T = {
     } with
 
     member this.Verticies = 
-        let rotateAboutPosition = rotate 0.1 this.Position.X this.Position.Y
+        let rotateAboutPosition = rotate Size this.Position.X this.Position.Y
         let angleOffset = this.Orientation
         let points = 
             [rotateAboutPosition <| 0.0<degree> + angleOffset

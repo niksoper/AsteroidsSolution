@@ -8,6 +8,11 @@ let tick t state =
     let newShip = state.Ship 
                     |> Ship.move t
                     |> Ship.moveBullets
+    state 
+    |> Game.detectShipCollision
+    |> Game.detectBulletCollision
+    |> ignore
+
     {state with 
         Ship = newShip
         Asteroids = newAsteroids}

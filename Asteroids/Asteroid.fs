@@ -44,3 +44,10 @@ let moveOne asteroid =
 let moveAll asteroids = 
     asteroids 
     |> List.map moveOne
+
+let collision position objectSize asteroid =
+    let asteroidSize = asteroid.Shape 
+                    |> List.map (fun p -> p.Magnitude)
+                    |> List.average
+    let range = asteroidSize + objectSize
+    Physics.inRange position asteroid.Position range
