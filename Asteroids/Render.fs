@@ -53,6 +53,7 @@ let ship (s: Ship.T) =
     s.Verticies |> triangle
     s.Position |> dot Color.White
     s |> thruster Color.Gold
+    s.Bullets |> List.iter (fun b -> b.Position |> dot Color.White)
 
 let asteroid (a: Asteroid.T) =
     a.Shape

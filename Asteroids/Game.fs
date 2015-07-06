@@ -29,6 +29,7 @@ type TriggerStateChange =
     | StopAccelerate
     | StartRotate of float<degree>
     | StopRotate
+    | Shoot
     | Tick of float<second>
     | EndGame
     | NoChange
@@ -43,5 +44,6 @@ let initialState = {
         Velocity = {Direction = 90.0<degree>; Magnitude = 0.0}
         Orientation = 90.0<degree> 
         Spin = 0.0<degree>
+        Bullets = []
     }
 }

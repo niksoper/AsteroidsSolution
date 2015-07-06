@@ -16,6 +16,7 @@ let private keyDownStateChange (keyArgs: KeyboardKeyEventArgs) =
     | Key.Down      -> StartAccelerate braking
     | Key.Right     -> StartRotate rotateSpeed
     | Key.Left      -> StartRotate -rotateSpeed
+    | Key.Space     -> Shoot
     | Key.Escape    -> EndGame
     | _             -> NoChange
 
